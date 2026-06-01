@@ -1,0 +1,56 @@
+name: QA Automation CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.9.10
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    name: Test (${{ matrix.browser }})
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chromium
+            pytest_args: "--browser chromium"
+          - browser: firefox
+            pytest_args: "--browser firefox"
+          - browser: msedge
+            pytest_args: "--browser chromium --browser-channel msedge"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Install Playwright browsers
+        run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Run tests
+        run: pytest tests/ ${{ matrix.pytest_args }} --alluredir=allure-results
+        env:
+          BASE_URL: ${{ secrets.BASE_URL || 'https://opensource-demo.orangehrmlive.com' }}
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME || 'Admin' }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD || 'admin123' }}
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.browser }}
+          path: allure-results/
