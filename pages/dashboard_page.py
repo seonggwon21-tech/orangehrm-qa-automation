@@ -1,6 +1,5 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
-from config.settings import DEFAULT_TIMEOUT
 from pages.base_page import BasePage
 from pages.components.sidebar import Sidebar
 
@@ -13,4 +12,4 @@ class DashboardPage(BasePage):
 
     def expect_loaded(self) -> None:
         self.wait_for_url("**/dashboard/**")
-        expect(self.heading).to_be_visible(timeout=DEFAULT_TIMEOUT)
+        self.expect_visible(self.heading)

@@ -99,6 +99,7 @@ def expect_field_required(self, count: int) -> None:
 **해결**
 - 페이지의 URL 대기를 모두 `self.wait_for_url()` 경유로 통일
 - 미사용 헬퍼(`get_text`, `is_visible`)와 `search_button` 제거 (검색 시나리오 도입 시 그때 추가)
+- 후속 정리에서 같은 패턴을 `expect_visible()`에서도 발견 — `dashboard_page`·`employee_list_page`가 `expect(x).to_be_visible(...)`를 인라인 복제하고 있어 헬퍼 호출로 통일 (래퍼가 sidebar·dashboard·employee 세 곳 모두에서 쓰이도록)
 
 ```python
 # pages/dashboard_page.py
@@ -162,4 +163,31 @@ def _item(self, menu_name: str) -> Locator:
 
 **교훈**
 재현성(버전 고정), 셀렉터 정확성, 로그 위생은 기능 테스트로는 드러나지 않는다. 리뷰 단계에서 의식적으로 점검할 영역.
+
+---
+
+## 7. 동적 렌더링 페이지에서 즉시 반환되는 가시성 체크
+
+**현상**
+OrangeHRM은 Vue.js 기반이라 로그인·대시보드 화면이 동적으로 렌더링되는데, `is_visible()`로 요소 노출을 확인하면 렌더링이 끝나기 전에 `False`가 반환돼 간헐적으로 실패했다.
+
+```python
+# 렌더링 완료 전 호출되면 "없음"으로 오판
+assert page.locator(".oxd-form").is_visible()
+```
+
+**원인**
+`is_visible()`은 호출 시점의 상태를 *즉시* 반환할 뿐 대기하지 않는다. 동적 렌더링 구간에서는 "아직 안 그려짐"을 "없음"으로 잘못 판단한다.
+
+**해결**
+auto-waiting이 내장된 `expect(locator).to_be_visible()`로 통일하고, `BasePage`에 래퍼를 두어 개별 테스트가 직접 `is_visible`을 쓰지 않게 했다.
+
+```python
+# pages/base_page.py
+def expect_visible(self, locator: Locator) -> None:
+    expect(locator).to_be_visible(timeout=DEFAULT_TIMEOUT)
+```
+
+**교훈**
+동적 렌더링 SPA에서 "보이는가"는 단발성 조회가 아니라 *조건 충족까지의 대기*다. 즉시 반환 API(`is_visible`)와 대기 API(`expect`)를 구분해 써야 한다.
 </content>

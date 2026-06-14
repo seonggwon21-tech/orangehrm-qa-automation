@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from config.settings import DEFAULT_TIMEOUT
 from pages.base_page import BasePage
@@ -14,7 +14,7 @@ class EmployeeListPage(BasePage):
 
     def expect_loaded(self) -> None:
         self.wait_for_url("**/pim/viewEmployeeList**")
-        expect(self.table).to_be_visible(timeout=DEFAULT_TIMEOUT)
+        self.expect_visible(self.table)
 
     def get_row_count(self) -> int:
         self.table.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)

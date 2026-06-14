@@ -13,6 +13,11 @@ class LoginPage(BasePage):
         self.error_alert = page.locator(".oxd-alert-content-text")
         self.field_errors = page.locator(".oxd-input-field-error-message")
 
+    def expect_loaded(self) -> None:
+        self.expect_visible(self.username_input)
+        self.expect_visible(self.password_input)
+        self.expect_visible(self.submit_button)
+
     def login(self, username: str, password: str) -> None:
         self.fill(self.username_input, username)
         self.fill(self.password_input, password)
