@@ -27,6 +27,7 @@
 - **fixture로 인증 비용 제거** — `authenticated_page` fixture가 로그인 후 대시보드 진입까지 처리해 각 테스트는 검증 로직에만 집중
 - **data-driven 검증** — 로그인 예외를 `parametrize`로 자격증명 오류·필수 입력 누락까지 분기 검증
 - **실패를 디버깅 가능하게** — `pytest_runtest_makereport` 훅으로 실패 시 스크린샷을 Allure에 자동 첨부
+- **코드 리뷰로 구조 점검** — POM 추상화 누수·죽은 코드·셀렉터 견고성 등을 리뷰로 잡고 수정 ([트러블슈팅 기록 →](docs/troubleshooting.md))
 
 ---
 
@@ -74,6 +75,7 @@ allure serve allure-results
 | 문서 | 내용 |
 |---|---|
 | [테스트 케이스](docs/test-cases.md) | 전제조건·절차·기대결과 + 추적 매트릭스 |
+| [트러블슈팅](docs/troubleshooting.md) | 코드 리뷰에서 잡은 구조·견고성 이슈와 해결 기록 |
 | [회고](retrospective/2026-06-01.md) | 프로젝트 진행 회고 |
 
 ---
