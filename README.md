@@ -19,7 +19,7 @@
 | 영역 | 상태 | 내용 |
 |:---|:---:|:---|
 | **프레임워크 골격** | ✅ 완료 | BasePage 공통 액션 · POM 3종 · Component(Sidebar) · 공유 fixture |
-| **UI 테스트** | 🟡 진행 | **6 TC** (smoke 5 · regression 1) — 로그인 / 대시보드 / PIM 직원 목록 |
+| **UI 테스트** | 🟡 진행 | **11 TC** (smoke 5 · regression 6) — 로그인(정상/자격증명 오류/필수 입력) / 대시보드 / PIM 직원 목록 |
 | **크로스 브라우저 CI** | ✅ 완료 | Chromium · Firefox · Edge matrix + Allure 아티팩트 업로드 |
 | **품질 게이트** | ✅ 완료 | Ruff lint · format 검사를 test job의 선행 조건으로 |
 | **API 테스트** | ⬜ 예정 | `tests/api/` 스캐폴딩만 존재 — requests 기반 인증/직원 API 검증 추가 예정 |
@@ -110,10 +110,13 @@ allure serve allure-results
 |--------|------|------|
 | `test_login_page_loads` | smoke | 로그인 폼 3개 요소 렌더링 확인 |
 | `test_login_with_valid_credentials` | smoke | 올바른 계정 로그인 → 대시보드 리다이렉트 |
-| `test_login_with_invalid_password` | regression | 잘못된 비밀번호 → 에러 메시지 노출 |
+| `test_login_with_invalid_credentials` | regression | 자격증명 오류 3종(비밀번호/아이디/둘 다) → "Invalid credentials" |
+| `test_login_with_empty_fields` | regression | 필수 입력 누락 3종(아이디/비밀번호/둘 다) → "Required" |
 | `test_dashboard_title_visible` | smoke | 로그인 후 Dashboard 헤딩 표시 |
 | `test_sidebar_navigation_links_visible` | smoke | 사이드바 주요 메뉴(Admin/PIM/Leave/Time) 표시 |
 | `test_employee_list_loads` | smoke | PIM 이동 후 직원 테이블 로드 + 행 존재 |
+
+> 📋 전제조건 · 절차 · 기대결과를 포함한 상세 명세는 [테스트 케이스 문서](docs/test-cases.md)를 참고하세요.
 
 ---
 

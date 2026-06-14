@@ -11,6 +11,7 @@ class LoginPage(BasePage):
         self.password_input = page.get_by_placeholder("Password")
         self.submit_button = page.get_by_role("button", name="Login")
         self.error_alert = page.locator(".oxd-alert-content-text")
+        self.field_errors = page.locator(".oxd-input-field-error-message")
 
     def login(self, username: str, password: str) -> None:
         self.fill(self.username_input, username)
@@ -19,3 +20,7 @@ class LoginPage(BasePage):
 
     def expect_error(self, text: str) -> None:
         expect(self.error_alert).to_have_text(text, timeout=DEFAULT_TIMEOUT)
+
+    def expect_field_required(self, count: int) -> None:
+        expect(self.field_errors).to_have_count(count, timeout=DEFAULT_TIMEOUT)
+        expect(self.field_errors.first).to_have_text("Required", timeout=DEFAULT_TIMEOUT)
