@@ -1,6 +1,6 @@
 import allure
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from pages.dashboard_page import DashboardPage
 
@@ -17,6 +17,6 @@ class TestDashboard:
     @pytest.mark.ui
     @pytest.mark.smoke
     def test_sidebar_navigation_links_visible(self, authenticated_page: Page) -> None:
+        dashboard = DashboardPage(authenticated_page)
         for name in ("Admin", "PIM", "Leave", "Time"):
-            locator = authenticated_page.locator(".oxd-main-menu-item").filter(has_text=name)
-            expect(locator).to_be_visible()
+            dashboard.sidebar.expect_link_visible(name)

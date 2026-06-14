@@ -12,7 +12,7 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     rep = outcome.get_result()
 
     if rep.when == "call" and rep.failed:
-        page: Page | None = item.funcargs.get("page")
+        page: Page | None = getattr(item, "funcargs", {}).get("page")
         if page:
             screenshot = page.screenshot()
             allure.attach(

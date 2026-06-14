@@ -11,12 +11,11 @@ class EmployeeListPage(BasePage):
         self.sidebar = Sidebar(page)
         self.table = page.locator(".oxd-table-body")
         self.rows = page.locator(".oxd-table-body .oxd-table-row--clickable")
-        self.search_button = page.get_by_role("button", name="Search")
 
     def expect_loaded(self) -> None:
-        self.page.wait_for_url("**/pim/viewEmployeeList**", timeout=DEFAULT_TIMEOUT)
+        self.wait_for_url("**/pim/viewEmployeeList**")
         expect(self.table).to_be_visible(timeout=DEFAULT_TIMEOUT)
 
     def get_row_count(self) -> int:
-        self.rows.first.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)
+        self.table.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)
         return self.rows.count()

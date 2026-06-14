@@ -12,5 +12,5 @@ class DashboardPage(BasePage):
         self.heading = page.get_by_role("heading", name="Dashboard")
 
     def expect_loaded(self) -> None:
-        self.page.wait_for_url("**/dashboard/**", timeout=DEFAULT_TIMEOUT)
+        self.wait_for_url("**/dashboard/**")
         expect(self.heading).to_be_visible(timeout=DEFAULT_TIMEOUT)

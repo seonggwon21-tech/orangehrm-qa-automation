@@ -22,5 +22,4 @@ class LoginPage(BasePage):
         expect(self.error_alert).to_have_text(text, timeout=DEFAULT_TIMEOUT)
 
     def expect_field_required(self, count: int) -> None:
-        expect(self.field_errors).to_have_count(count, timeout=DEFAULT_TIMEOUT)
-        expect(self.field_errors.first).to_have_text("Required", timeout=DEFAULT_TIMEOUT)
+        expect(self.field_errors).to_have_text(["Required"] * count, timeout=DEFAULT_TIMEOUT)

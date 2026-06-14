@@ -22,13 +22,6 @@ class BasePage:
         locator.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)
         locator.fill(value)
 
-    def get_text(self, locator: Locator) -> str:
-        locator.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)
-        return locator.inner_text()
-
-    def is_visible(self, locator: Locator) -> bool:
-        return locator.is_visible()
-
     def wait_for_url(self, url_pattern: str) -> None:
         self.page.wait_for_url(url_pattern, timeout=DEFAULT_TIMEOUT)
 
