@@ -3,7 +3,7 @@
 > HR 관리 솔루션([OrangeHRM Demo](https://opensource-demo.orangehrmlive.com))의 핵심 화면을 **Playwright + pytest**로 자동화한 QA 포트폴리오
 > — POM + Component 구조 · 크로스 브라우저 3종 · Ruff + GitHub Actions CI
 
-![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.14-blue?logo=python&logoColor=white)
 ![pytest](https://img.shields.io/badge/pytest-8.x-0A9EDC?logo=pytest&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-1.x-2EAD33?logo=playwright&logoColor=white)
 ![Allure](https://img.shields.io/badge/Allure-Report-FF6B6B?logo=qameta&logoColor=white)
@@ -26,7 +26,7 @@
 - **방어적 클릭** — `BasePage.click()`이 `wait_for(visible) → scroll_into_view → click` 순으로 동작해 고정 `sleep` 없이 렌더링 타이밍 이슈를 흡수
 - **fixture로 인증 비용 제거** — `authenticated_page` fixture가 로그인 후 대시보드 진입까지 처리해 각 테스트는 검증 로직에만 집중
 - **data-driven 검증** — 로그인 예외를 `parametrize`로 자격증명 오류·필수 입력 누락까지 분기 검증
-- **실패를 디버깅 가능하게** — `pytest_runtest_makereport` 훅으로 실패 시 스크린샷을 Allure에 자동 첨부
+- **실패를 디버깅 가능하게** — `pytest_runtest_makereport` 훅으로 실패 시 스크린샷을 Allure에 자동 첨부하고, Playwright Trace(`retain-on-failure`)를 남겨 CI 아티팩트로 업로드 (타임라인·DOM 스냅샷·네트워크까지 재현)
 - **코드 리뷰로 구조 점검** — POM 추상화 누수·죽은 코드·셀렉터 견고성 등을 리뷰로 잡고 수정 ([코드 리뷰 →](docs/code-review.md))
 
 ---
@@ -35,12 +35,12 @@
 
 | 분류 | 사용 기술 |
 |---|---|
-| 언어 · 프레임워크 | Python 3.12 · pytest 8 (fixture, marker, parametrize) |
+| 언어 · 프레임워크 | Python 3.14 · pytest 8 (fixture, marker, parametrize) |
 | UI 자동화 | Playwright (Python) · **POM + Component Object Pattern** |
 | 크로스 브라우저 | Chromium · Firefox · Edge (`--browser` 옵션) |
 | API 자동화 *(예정)* | requests |
-| 리포팅 | Allure (feature/title 계층 + 실패 스크린샷) |
-| 품질 · CI/CD | Ruff(Lint 게이트) · GitHub Actions (Lint → Test matrix) |
+| 리포팅 | Allure (feature/title 계층 + 실패 스크린샷, GitHub Pages 게시) · Playwright Trace |
+| 품질 · CI/CD | Ruff(Lint 게이트) · pre-commit · GitHub Actions (Lint → Test matrix → Pages, 캐싱·`-n auto` 병렬) |
 | 환경 · 로깅 | python-dotenv · Python logging |
 
 ---
@@ -49,24 +49,29 @@
 
 ```bash
 # 1. 의존성 설치
-pip install -r requirements.txt
+pip install -r requirements.txt          # 테스트 실행용 (런타임)
+pip install -r requirements-dev.txt      # 린트·pre-commit 포함 (개발용)
 python -m playwright install chromium firefox
 
 # 2. 환경 변수 설정 (.env.example 복사 후 실제 값 입력)
 cp .env.example .env
 #   BASE_URL / ADMIN_USERNAME / ADMIN_PASSWORD
 
-# 3. 테스트 실행
+# 3. (선택) pre-commit 훅 설치 — 커밋 시 ruff lint/format 자동 실행
+pre-commit install
+
+# 4. 테스트 실행
 pytest                                          # headless Chromium
 pytest --browser firefox                        # 브라우저 지정
 pytest --browser chromium --browser-channel msedge
 pytest -m smoke                                 # 마커 필터링
+pytest -n auto                                  # 병렬 실행 (pytest-xdist)
 
-# 4. Allure 리포트
+# 5. Allure 리포트
 allure serve allure-results
 ```
 
-> CI: `main`·`develop` push 또는 `main` PR 시 GitHub Actions가 **Lint → Test(Chromium/Firefox/Edge matrix)** 를 자동 실행하고 Allure 아티팩트를 업로드합니다.
+> CI: `main`·`develop` push 또는 `main` PR 시 GitHub Actions가 **Lint → Test(Chromium/Firefox/Edge matrix) → Allure 리포트 게시** 를 자동 실행합니다. pip·Playwright 브라우저를 캐싱하고 테스트를 `-n auto`로 병렬 실행하며, `develop`/`main` push 시 Allure HTML 리포트를 [GitHub Pages](https://seonggwon21-tech.github.io/orangehrm-qa-automation/)에 history와 함께 배포합니다.
 
 ---
 
