@@ -1,0 +1,9 @@
+# 커밋 시 ruff lint/format을 자동 실행 (CI의 Lint 게이트와 동일 규칙)
+# 설치: pip install -r requirements-dev.txt && pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.17
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
