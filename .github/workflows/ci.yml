@@ -31,10 +31,16 @@ jobs:
         include:
           - browser: chromium
             pytest_args: "--browser chromium"
+            browser_pkg: chromium      # 다운로드할 Playwright 브라우저 바이너리
+            deps_pkg: chromium         # install-deps 대상 (시스템 공유 라이브러리)
           - browser: firefox
             pytest_args: "--browser firefox"
+            browser_pkg: firefox
+            deps_pkg: firefox
           - browser: msedge
             pytest_args: "--browser chromium --browser-channel msedge"
+            browser_pkg: ""            # 러너에 사전 설치된 Edge 사용 → 바이너리 다운로드 생략
+            deps_pkg: chromium
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -54,13 +60,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}
-      - name: Install Playwright browsers (+ system deps)
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: python -m playwright install --with-deps ${{ matrix.browser }}
-      - name: Install Playwright system deps (cache hit)
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: python -m playwright install-deps ${{ matrix.browser }}
+          key: ${{ runner.os }}-playwright-${{ matrix.browser }}-${{ steps.pw.outputs.version }}
+      # 브라우저 바이너리는 캐시 미스일 때만 다운로드. msedge는 러너 내장 Edge를
+      # 쓰므로 browser_pkg가 비어 있어 이 스텝을 건너뜀(13분 다운로드 제거).
+      - name: Install Playwright browser binary (cache miss)
+        if: steps.pw-cache.outputs.cache-hit != 'true' && matrix.browser_pkg != ''
+        run: python -m playwright install ${{ matrix.browser_pkg }}
+      # 시스템 공유 라이브러리는 캐시되지 않으므로 매번 설치(apt). Edge도 Chromium
+      # 기반이라 chromium deps로 충분.
+      - name: Install Playwright system deps
+        run: python -m playwright install-deps ${{ matrix.deps_pkg }}
 
       - name: Run tests
         run: pytest ${{ matrix.pytest_args }} -n auto
