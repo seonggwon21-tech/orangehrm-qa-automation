@@ -48,7 +48,7 @@ jobs:
       # Playwright 브라우저는 버전별로 캐시 (공식 CI 권장 패턴)
       - name: Resolve Playwright version
         id: pw
-        run: echo "version=$(grep -oP 'playwright==\K.*' requirements.txt)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(grep -oP '^playwright==\K.*' requirements.txt)" >> "$GITHUB_OUTPUT"
       - name: Cache Playwright browsers
         id: pw-cache
         uses: actions/cache@v4
