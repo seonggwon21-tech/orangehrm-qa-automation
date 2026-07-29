@@ -14,12 +14,11 @@ class BasePage:
         self.page.goto(url)
 
     def click(self, locator: Locator) -> None:
-        locator.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)
-        locator.scroll_into_view_if_needed()
+        self.logger.info(f"Clicking {locator}")
         locator.click()
 
     def fill(self, locator: Locator, value: str) -> None:
-        locator.wait_for(state="visible", timeout=DEFAULT_TIMEOUT)
+        self.logger.info(f"Filling {locator}")
         locator.fill(value)
 
     def wait_for_url(self, url_pattern: str) -> None:
