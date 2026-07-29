@@ -1,0 +1,5 @@
+2026-07-29 12:29:40,510 [INFO] LoginPage: Navigating to https://opensource-demo.orangehrmlive.com
+2026-07-29 12:29:43,639 [INFO] LoginPage: Filling <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'> selector='internal:attr=[placeholder="Username"i]'>
+2026-07-29 12:29:43,891 [INFO] LoginPage: Filling <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'> selector='internal:attr=[placeholder="Password"i]'>
+2026-07-29 12:29:43,912 [INFO] LoginPage: Clicking <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'> selector='internal:role=button[name="Login"i]'>
+2026-07-29 12:29:45,618 [INFO] Sidebar: Clicking <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index'> selector='.oxd-main-menu-item >> internal:has="internal:text=\\"PIM\\"s"'>

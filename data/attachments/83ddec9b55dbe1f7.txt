@@ -1,0 +1,4 @@
+2026-07-29 12:29:40,443 [INFO] LoginPage: Navigating to https://opensource-demo.orangehrmlive.com
+2026-07-29 12:29:43,708 [INFO] LoginPage: Filling <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'> selector='internal:attr=[placeholder="Username"i]'>
+2026-07-29 12:29:44,066 [INFO] LoginPage: Filling <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'> selector='internal:attr=[placeholder="Password"i]'>
+2026-07-29 12:29:44,092 [INFO] LoginPage: Clicking <Locator frame=<Frame name= url='https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'> selector='internal:role=button[name="Login"i]'>
