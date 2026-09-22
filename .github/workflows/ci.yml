@@ -109,7 +109,7 @@ jobs:
           mkdir -p allure-results
           cp -r allure-artifacts/*/. allure-results/ 2>/dev/null || true
       - name: Load previous report (for trend history)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         continue-on-error: true
         with:
           ref: gh-pages
